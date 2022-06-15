@@ -1,5 +1,6 @@
 import express,{ Application } from "express";
 import userRoutes from "../routes/usuario";
+import direccionesRoutes from '../routes/direcciones'
 import cors from "cors";
 import database from "../database/connection";
 import '../models/usuario'
@@ -9,8 +10,10 @@ class Server{
     private app: Application;
     private port:string;
     private apiPaths = {
-        usuarios: '/usuarios'
+        usuarios: '/usuarios',
+        direcciones: '/direcciones'
     }
+
     constructor(){
         this.app = express();
         this.port = process.env.PORT || '8000';
@@ -24,6 +27,7 @@ class Server{
 
     routes(){
         this.app.use(this.apiPaths.usuarios, userRoutes)
+        this.app.use(this.apiPaths.direcciones,direccionesRoutes)
     }
 
     async databaseConection(){
