@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Direcciones from "../models/direcciones";
 import Usuario from "../models/usuario";
 
 export const getUsuarios = async (req: Request, res: Response) => {
@@ -8,39 +9,37 @@ export const getUsuarios = async (req: Request, res: Response) => {
     });
 }
 
-export const getUsuario = (req: Request, res: Response) => {
+export const getUsuario = async (req: Request, res: Response) => {
     const { id } = req.params;
 
+    const usuario = await Usuario.findByPk(id);
+
+    if(!usuario) res.status(500).json({ message: 'Usuario no existe.'});
+
     res.json({
-        message: 'getUsuario',
-        id
-    })
+        usuario
+    });
 }
 
 export const postUsuario = async (req: Request, res: Response) => {
     const { nombre, correo } = req.body;
 
-    if(nombre && correo){
-        try {
-            await Usuario.create({
-                nombre,
-                correo
-            })   
-    
-            res.json({
-                msg: 'postUsuario',
-            })
-        } catch (error:any) {
-            res.status(404).json({
-                message: error.message,
-            })    
-        }
-    }else{
-        res.status(500).json({
-            message: 'errorPost',
-        })
-    }
+    if(!nombre || !correo) res.status(500).json({ message: 'Error creacion usuario' });
 
+    try {
+        await Usuario.create({
+            nombre,
+            correo
+        })   
+
+        res.json({
+            msg: 'Creacion de usuario exitosa',
+        })
+    } catch (error:any) {
+        res.status(404).json({
+            message: error.message,
+        })    
+    }
 
 }
 
@@ -88,6 +87,19 @@ export const deleteUsuario = async (req: Request, res: Response) => {
         
     }else{
         res.status(500).json({message: 'Usuario no existe'})
+    }
+
+}
+
+export const getUsuarioDirecciones = async (req: Request, res:Response) => {
+    const { id } = req.params;
+
+    try {
+        const direccionesUsuario = await Direcciones.findAll({ where:{ idUsuario:id } })
+        res.json(direccionesUsuario)
+
+    } catch (error:any) {
+        res.status(500).json({message: error.message})
     }
 
 }
