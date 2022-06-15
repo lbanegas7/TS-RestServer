@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Direcciones from "../models/direcciones";
 import Usuario from "../models/usuario";
 
 export const getUsuarios = async (req: Request, res: Response) => {
@@ -88,6 +89,19 @@ export const deleteUsuario = async (req: Request, res: Response) => {
         
     }else{
         res.status(500).json({message: 'Usuario no existe'})
+    }
+
+}
+
+export const getUsuarioDirecciones = async (req: Request, res:Response) => {
+    const { id } = req.params;
+    
+    try {
+        const direccionesUsuario = await Direcciones.findAll({ where:{ idUsuario:id } })
+        res.json(direccionesUsuario)
+
+    } catch (error:any) {
+        res.status(500).json({message: error.message})
     }
 
 }

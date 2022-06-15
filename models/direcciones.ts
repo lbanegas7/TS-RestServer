@@ -8,10 +8,12 @@ const Direcciones = database.define('direcciones',{
         autoIncrement: true
     },
     nombre:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull:false
     },
     descripcion:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull:false
     }
 },
 {
